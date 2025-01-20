@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"gator/internal/app"
 	"gator/internal/database"
-	"gator/internal/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -27,7 +26,6 @@ func RegisterUserHandlers(c *app.Commands) {
 	c.Register("login", handleLogin)
 	c.Register("reset", handleReset)
 	c.Register("users", handleList)
-	c.Register("agg", handleAgg)
 }
 
 func validateUsername(username string) error {
@@ -130,25 +128,4 @@ func handleList(s *app.AppState, cmd app.Command) error {
 		fmt.Printf("%s\n", user.Name.String)
 	}
 	return nil
-}
-
-func handleAgg(s *app.AppState, cmd app.Command) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var rssFeed *utils.RSSFeed
-	rssFeed, err := utils.FetchFeed(ctx, "https://www.wagslane.dev/index.xml")
-	if err != nil {
-		return fmt.Errorf("failed to fetch feed: %v", err)
-	}
-	fmt.Println("Title:", rssFeed.Channel.Title)
-	fmt.Println("Link:", rssFeed.Channel.Link)
-	fmt.Println("Description:", rssFeed.Channel.Description)
-	fmt.Println("Items:")
-	fmt.Printf("Title: %s\n", rssFeed.Channel.Item[0].Title)
-	fmt.Printf("Link: %s\n", rssFeed.Channel.Item[0].Link)
-	fmt.Printf("Description: %s\n", rssFeed.Channel.Item[0].Description)
-
-	return nil
-
 }
