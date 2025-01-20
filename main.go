@@ -35,6 +35,7 @@ func main() {
 	// Register commands
 	handlers.RegisterUserHandlers(commands)
 	handlers.RegisterRSSHandlers(commands)
+	handlers.RegisterFeedFollowHandlers(commands)
 
 	// Parse and execute command-line arguments
 	args := os.Args[1:]

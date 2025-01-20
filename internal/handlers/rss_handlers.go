@@ -75,7 +75,20 @@ func handleAddFeed(s *app.AppState, cmd app.Command) error {
 	if err != nil {
 		return fmt.Errorf("failed to add feed: %v", err)
 	}
+	feed, err := s.DB.GetFeedByURL(ctx, url)
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("User %s added Feed %s successfully\n", s.AppConfig.CurrentUserName, name)
+	_, err = s.DB.CreateFeedFollow(ctx, database.CreateFeedFollowParams{
+		ID:     uuid.New(),
+		UserID: uuid.NullUUID{UUID: user.ID, Valid: true},
+		FeedID: uuid.NullUUID{UUID: feed.ID, Valid: true},
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
